@@ -1,12 +1,7 @@
 {
   "name": "@aave/governance-v2",
   "version": "1.0.0",
-  "description": "Aave Governance v2 smart contracts",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/aave/governance-v2.git"
-  },
-  "homepage": "https://github.com/aave/governance-v2",
+  "description": "Pegasys Governance v2 smart contracts",
   "files": [
     "contracts",
     "artifacts"
@@ -79,28 +74,5 @@
       "pre-commit": "pretty-quick --staged"
     }
   },
-  "author": "Aave",
-  "contributors": [
-    {
-      "name": "Ernesto Boado",
-      "email": "ernesto@aave.com"
-    },
-    {
-      "name": "Emilio Frangella",
-      "email": "emilio@aave.com"
-    },
-    {
-      "name": "Andrey Kozlov",
-      "email": "andrey@aave.com"
-    },
-    {
-      "name": "David Racero",
-      "email": "david.k@aave.com"
-    },
-    {
-      "name": "Hadrien Charlanes",
-      "email": "hadrien@aave.com"
-    }
-  ],
   "license": "AGPLv3"
 }
