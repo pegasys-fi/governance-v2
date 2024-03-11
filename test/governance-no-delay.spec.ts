@@ -38,7 +38,7 @@ const proposalStates = {
 
 const snapshots = new Map<string, string>();
 
-makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testEnv: TestEnv) => {
+makeSuite('Pegasys Governance v2 no voting delay ', deployGovernanceNoDelay, (testEnv: TestEnv) => {
   let votingDelay: BigNumber;
   let votingDuration: BigNumber;
   let executionDelay: BigNumber;
@@ -53,7 +53,7 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
   // Snapshoting main states as entry for later testing
   // Then will test by last snap shot first.
   before(async () => {
-    const {gov, executor, strategy, aave, users, minter} = testEnv;
+    const {gov, executor, strategy, psys, users, minter} = testEnv;
     const [user1, user2, user3, user4, user5] = users;
 
     ({
@@ -87,7 +87,7 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
       minimumPower.div('2').add('2')
     );
     // user 5 delegates to user 2 => user 2 reached quorum
-    await waitForTx(await aave.connect(user5.signer).delegate(user2.address));
+    await waitForTx(await psys.connect(user5.signer).delegate(user2.address));
     block = await DRE.ethers.provider.getBlockNumber();
     // checking delegation worked
     expect(await strategy.getVotingPowerAt(user5.address, block)).to.be.equal('0');
@@ -112,7 +112,7 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
     // SNAPSHOT PENDING
     snapshots.set('active', await evmSnapshot());
 
-    const balanceAfter = await aave.connect(user1.signer).balanceOf(user1.address);
+    const balanceAfter = await psys.connect(user1.signer).balanceOf(user1.address);
 
     // Pending => Active
     // => go tto start block
@@ -183,11 +183,11 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         gov,
         executor,
         users: [user1],
-        aave,
+        psys,
       } = testEnv;
 
       // user 1 has only half of enough voting power
-      const balance = await aave.connect(user1.signer).balanceOf(user1.address);
+      const balance = await psys.connect(user1.signer).balanceOf(user1.address);
       await expect(gov.connect(user1.signer).submitVote(proposalId, true))
         .to.emit(gov, 'VoteEmitted')
         .withArgs(proposalId, user1.address, true, balance);
@@ -206,10 +206,10 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         executor,
         strategy,
         users: [user1, user2],
-        aave,
+        psys,
       } = testEnv;
       // User 1 + User 2 power > voting po<wer, see before() function
-      const balance1 = await aave.connect(user1.signer).balanceOf(user1.address);
+      const balance1 = await psys.connect(user1.signer).balanceOf(user1.address);
       await expect(gov.connect(user1.signer).submitVote(proposalId, true))
         .to.emit(gov, 'VoteEmitted')
         .withArgs(proposalId, user1.address, true, balance1);
@@ -235,11 +235,11 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         strategy,
         executor,
         users: [user1, user2, , , user5],
-        aave,
+        psys,
       } = testEnv;
       // user 5 has delegated to user 2
-      const balance2 = await aave.connect(user1.signer).balanceOf(user2.address);
-      const balance5 = await aave.connect(user2.signer).balanceOf(user5.address);
+      const balance2 = await psys.connect(user1.signer).balanceOf(user2.address);
+      const balance5 = await psys.connect(user2.signer).balanceOf(user5.address);
       expect(await strategy.getVotingPowerAt(user2.address, startBlock)).to.be.equal(
         balance2.add(balance5)
       );
@@ -262,7 +262,7 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         users: [user1, user2, user3, user4],
         minter,
         executor,
-        aave,
+        psys,
       } = testEnv;
       // User 2 + User 5 delegation = 20% power, voting yes
       //  user 2 has received delegation from user 5
@@ -272,7 +272,7 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         .withArgs(proposalId, user2.address, true, power2);
 
       // User 4 = 15% Power, voting no
-      const balance4 = await aave.connect(user4.signer).balanceOf(user4.address);
+      const balance4 = await psys.connect(user4.signer).balanceOf(user4.address);
       await expect(gov.connect(user4.signer).submitVote(proposalId, false))
         .to.emit(gov, 'VoteEmitted')
         .withArgs(proposalId, user4.address, false, balance4);
@@ -292,7 +292,7 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         users: [user1, user2, user3, user4],
         minter,
         executor,
-        aave,
+        psys,
       } = testEnv;
       // User 2 + User 5 delegation = 20% power, voting yes
       //  user 2 has received delegation from user 5
@@ -302,13 +302,13 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         .withArgs(proposalId, user2.address, true, power2);
 
       // User 4 = 15% Power, voting no
-      const balance4 = await aave.connect(user4.signer).balanceOf(user4.address);
+      const balance4 = await psys.connect(user4.signer).balanceOf(user4.address);
       await expect(gov.connect(user4.signer).submitVote(proposalId, false))
         .to.emit(gov, 'VoteEmitted')
         .withArgs(proposalId, user4.address, false, balance4);
 
       // User 3 makes the vote swing
-      const balance3 = await aave.connect(user3.signer).balanceOf(user3.address);
+      const balance3 = await psys.connect(user3.signer).balanceOf(user3.address);
       await expect(gov.connect(user3.signer).submitVote(proposalId, true))
         .to.emit(gov, 'VoteEmitted')
         .withArgs(proposalId, user3.address, true, balance3);
@@ -325,7 +325,7 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
       const {
         users: [, , user3],
         minter,
-        aave,
+        psys,
         gov,
       } = testEnv;
       const {chainId} = await DRE.ethers.provider.getNetwork();
@@ -342,7 +342,7 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
 
       const {v, r, s} = getSignatureFromTypedData(ownerPrivateKey, msgParams);
 
-      const balance = await aave.connect(minter.signer).balanceOf(user3.address);
+      const balance = await psys.connect(minter.signer).balanceOf(user3.address);
 
       // Publish vote by signature using other address as relayer
       const votePermitTx = await gov
@@ -368,10 +368,10 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         users: [user],
         minter,
         executor,
-        aave,
+        psys,
         strategy,
       } = testEnv;
-      // Give not enough AAVE for proposition tokens
+      // Give not enough PSYS for proposition tokens
       await setBalance(user, minimumCreatePower.sub('1'), testEnv);
 
       // Params for proposal
@@ -396,7 +396,7 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         users: [user],
         minter,
         executor,
-        aave,
+        psys,
         strategy,
       } = testEnv;
 
@@ -456,7 +456,7 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         users: [user, user2],
         minter,
         executor,
-        aave,
+        psys,
         strategy,
       } = testEnv;
 
@@ -466,7 +466,7 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
       // give enough power
       await setBalance(user, minimumCreatePower.div('2').add('1'), testEnv);
       await setBalance(user2, minimumCreatePower.div('2').add('1'), testEnv);
-      await waitForTx(await aave.connect(user2.signer).delegate(user.address));
+      await waitForTx(await psys.connect(user2.signer).delegate(user.address));
 
       // Params for proposal
       const params: [
@@ -518,10 +518,10 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         users: [user],
         minter,
         executor,
-        aave,
+        psys,
         strategy,
       } = testEnv;
-      // Give enought AAVE for proposition tokens
+      // Give enought PSYS for proposition tokens
       await setBalance(user, minimumCreatePower, testEnv);
 
       // Count current proposal id
@@ -549,10 +549,10 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         users: [user],
         minter,
         executor,
-        aave,
+        psys,
         strategy,
       } = testEnv;
-      // Give enought AAVE for proposition tokens
+      // Give enought PSYS for proposition tokens
       await setBalance(user, minimumCreatePower, testEnv);
 
       // Count current proposal id
@@ -580,10 +580,10 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         users: [user],
         minter,
         executor,
-        aave,
+        psys,
         strategy,
       } = testEnv;
-      // Give enought AAVE for proposition tokens
+      // Give enought PSYS for proposition tokens
       await setBalance(user, minimumCreatePower, testEnv);
 
       // Count current proposal id
@@ -611,10 +611,10 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         users: [user],
         minter,
         executor,
-        aave,
+        psys,
         strategy,
       } = testEnv;
-      // Give enought AAVE for proposition tokens
+      // Give enought PSYS for proposition tokens
       await setBalance(user, minimumCreatePower, testEnv);
 
       // Count current proposal id
@@ -668,10 +668,10 @@ makeSuite('Aave Governance V2 no voting delay ', deployGovernanceNoDelay, (testE
         users: [user],
         minter,
         executor,
-        aave,
+        psys,
         strategy,
       } = testEnv;
-      // Give enought AAVE for proposition tokens
+      // Give enought PSYS for proposition tokens
       await setBalance(user, minimumCreatePower, testEnv);
 
       const params: (

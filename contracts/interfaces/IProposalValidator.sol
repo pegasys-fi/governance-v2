@@ -2,10 +2,9 @@
 pragma solidity 0.7.5;
 pragma abicoder v2;
 
-import {IAaveGovernanceV2} from './IAaveGovernanceV2.sol';
+import {IPegasysGovernanceV2} from './IPegasysGovernanceV2.sol';
 
 interface IProposalValidator {
-
   /**
    * @dev Called to validate a proposal (e.g when creating new proposal in Governance)
    * @param governance Governance Contract
@@ -14,7 +13,7 @@ interface IProposalValidator {
    * @return boolean, true if can be created
    **/
   function validateCreatorOfProposal(
-    IAaveGovernanceV2 governance,
+    IPegasysGovernanceV2 governance,
     address user,
     uint256 blockNumber
   ) external view returns (bool);
@@ -27,7 +26,7 @@ interface IProposalValidator {
    * @return boolean, true if can be cancelled
    **/
   function validateProposalCancellation(
-    IAaveGovernanceV2 governance,
+    IPegasysGovernanceV2 governance,
     address user,
     uint256 blockNumber
   ) external view returns (bool);
@@ -40,7 +39,7 @@ interface IProposalValidator {
    * @return true if user has enough power
    **/
   function isPropositionPowerEnough(
-    IAaveGovernanceV2 governance,
+    IPegasysGovernanceV2 governance,
     address user,
     uint256 blockNumber
   ) external view returns (bool);
@@ -51,7 +50,7 @@ interface IProposalValidator {
    * @param blockNumber Blocknumber at which to evaluate
    * @return minimum Proposition Power needed
    **/
-  function getMinimumPropositionPowerNeeded(IAaveGovernanceV2 governance, uint256 blockNumber)
+  function getMinimumPropositionPowerNeeded(IPegasysGovernanceV2 governance, uint256 blockNumber)
     external
     view
     returns (uint256);
@@ -62,7 +61,7 @@ interface IProposalValidator {
    * @param proposalId Id of the proposal to set
    * @return true if proposal passed
    **/
-  function isProposalPassed(IAaveGovernanceV2 governance, uint256 proposalId)
+  function isProposalPassed(IPegasysGovernanceV2 governance, uint256 proposalId)
     external
     view
     returns (bool);
@@ -74,7 +73,7 @@ interface IProposalValidator {
    * @param proposalId Id of the proposal to verify
    * @return voting power needed for a proposal to pass
    **/
-  function isQuorumValid(IAaveGovernanceV2 governance, uint256 proposalId)
+  function isQuorumValid(IPegasysGovernanceV2 governance, uint256 proposalId)
     external
     view
     returns (bool);
@@ -86,7 +85,7 @@ interface IProposalValidator {
    * @param proposalId Id of the proposal to verify
    * @return true if enough For-Votes
    **/
-  function isVoteDifferentialValid(IAaveGovernanceV2 governance, uint256 proposalId)
+  function isVoteDifferentialValid(IPegasysGovernanceV2 governance, uint256 proposalId)
     external
     view
     returns (bool);

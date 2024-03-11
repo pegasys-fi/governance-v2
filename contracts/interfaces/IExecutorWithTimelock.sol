@@ -2,7 +2,7 @@
 pragma solidity 0.7.5;
 pragma abicoder v2;
 
-import {IAaveGovernanceV2} from './IAaveGovernanceV2.sol';
+import {IPegasysGovernanceV2} from './IPegasysGovernanceV2.sol';
 
 interface IExecutorWithTimelock {
   /**
@@ -84,21 +84,25 @@ interface IExecutorWithTimelock {
     bool withDelegatecall,
     bytes resultData
   );
+
   /**
    * @dev Getter of the current admin address (should be governance)
-   * @return The address of the current admin 
+   * @return The address of the current admin
    **/
   function getAdmin() external view returns (address);
+
   /**
    * @dev Getter of the current pending admin address
-   * @return The address of the pending admin 
+   * @return The address of the pending admin
    **/
   function getPendingAdmin() external view returns (address);
+
   /**
    * @dev Getter of the delay between queuing and execution
    * @return The delay in seconds
    **/
   function getDelay() external view returns (uint256);
+
   /**
    * @dev Returns whether an action (via actionHash) is queued
    * @param actionHash hash of the action to be checked
@@ -106,31 +110,36 @@ interface IExecutorWithTimelock {
    * @return true if underlying action of actionHash is queued
    **/
   function isActionQueued(bytes32 actionHash) external view returns (bool);
+
   /**
-   * @dev Checks whether a proposal is over its grace period 
+   * @dev Checks whether a proposal is over its grace period
    * @param governance Governance contract
    * @param proposalId Id of the proposal against which to test
    * @return true of proposal is over grace period
    **/
-  function isProposalOverGracePeriod(IAaveGovernanceV2 governance, uint256 proposalId)
+  function isProposalOverGracePeriod(IPegasysGovernanceV2 governance, uint256 proposalId)
     external
     view
     returns (bool);
+
   /**
    * @dev Getter of grace period constant
    * @return grace period in seconds
    **/
   function GRACE_PERIOD() external view returns (uint256);
+
   /**
    * @dev Getter of minimum delay constant
    * @return minimum delay in seconds
    **/
   function MINIMUM_DELAY() external view returns (uint256);
+
   /**
    * @dev Getter of maximum delay constant
    * @return maximum delay in seconds
    **/
   function MAXIMUM_DELAY() external view returns (uint256);
+
   /**
    * @dev Function, called by Governance, that queue a transaction, returns action hash
    * @param target smart contract target
@@ -148,6 +157,7 @@ interface IExecutorWithTimelock {
     uint256 executionTime,
     bool withDelegatecall
   ) external returns (bytes32);
+
   /**
    * @dev Function, called by Governance, that cancels a transaction, returns the callData executed
    * @param target smart contract target
@@ -165,6 +175,7 @@ interface IExecutorWithTimelock {
     uint256 executionTime,
     bool withDelegatecall
   ) external payable returns (bytes memory);
+
   /**
    * @dev Function, called by Governance, that cancels a transaction, returns action hash
    * @param target smart contract target

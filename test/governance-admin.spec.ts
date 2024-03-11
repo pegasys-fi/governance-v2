@@ -7,14 +7,14 @@ import {deployGovernanceStrategy} from '../helpers/contracts-deployments';
 use(solidity);
 
 makeSuite(
-  'Aave Governance V2 tests: admin functions',
+  'Pegasys Governance v2 tests: admin functions',
   deployGovernanceWithoutExecutorAsOwner,
   (testEnv: TestEnv) => {
     describe('Testing setter functions', async function () {
       it('Set governance strategy', async () => {
-        const {gov, deployer, aave, stkAave} = testEnv;
+        const {gov, deployer, psys, stkPSYS} = testEnv;
 
-        const strategy = await deployGovernanceStrategy(aave.address, stkAave.address);
+        const strategy = await deployGovernanceStrategy(psys.address, stkPSYS.address);
 
         // Set new strategy
         await gov.connect(deployer.signer).setGovernanceStrategy(strategy.address);

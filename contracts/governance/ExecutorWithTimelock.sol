@@ -3,15 +3,15 @@ pragma solidity 0.7.5;
 pragma abicoder v2;
 
 import {IExecutorWithTimelock} from '../interfaces/IExecutorWithTimelock.sol';
-import {IAaveGovernanceV2} from '../interfaces/IAaveGovernanceV2.sol';
+import {IPegasysGovernanceV2} from '../interfaces/IPegasysGovernanceV2.sol';
 import {SafeMath} from '../dependencies/open-zeppelin/SafeMath.sol';
 
 /**
- * @title Time Locked Executor Contract, inherited by Aave Governance Executors
+ * @title Time Locked Executor Contract, inherited by Pegasys Governance Executors
  * @dev Contract that can queue, execute, cancel transactions voted by Governance
  * Queued transactions can be executed after a delay and until
  * Grace period is not over.
- * @author Aave
+ * @author Pegasys
  **/
 contract ExecutorWithTimelock is IExecutorWithTimelock {
   using SafeMath for uint256;
@@ -203,7 +203,7 @@ contract ExecutorWithTimelock is IExecutorWithTimelock {
     bool success;
     bytes memory resultData;
     if (withDelegatecall) {
-      require(msg.value >= value, "NOT_ENOUGH_MSG_VALUE");
+      require(msg.value >= value, 'NOT_ENOUGH_MSG_VALUE');
       // solium-disable-next-line security/no-call-value
       (success, resultData) = target.delegatecall(callData);
     } else {
@@ -267,13 +267,15 @@ contract ExecutorWithTimelock is IExecutorWithTimelock {
    * @param proposalId Id of the proposal against which to test
    * @return true of proposal is over grace period
    **/
-  function isProposalOverGracePeriod(IAaveGovernanceV2 governance, uint256 proposalId)
+  function isProposalOverGracePeriod(IPegasysGovernanceV2 governance, uint256 proposalId)
     external
     view
     override
     returns (bool)
   {
-    IAaveGovernanceV2.ProposalWithoutVotes memory proposal = governance.getProposalById(proposalId);
+    IPegasysGovernanceV2.ProposalWithoutVotes memory proposal = governance.getProposalById(
+      proposalId
+    );
 
     return (block.timestamp > proposal.executionTime.add(GRACE_PERIOD));
   }

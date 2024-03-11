@@ -2,7 +2,7 @@
 pragma solidity 0.7.5;
 pragma abicoder v2;
 
-import {IAaveGovernanceV2} from '../interfaces/IAaveGovernanceV2.sol';
+import {IPegasysGovernanceV2} from '../interfaces/IPegasysGovernanceV2.sol';
 import {IProposalValidator} from '../interfaces/IProposalValidator.sol';
 import {IExecutorWithTimelock} from '../interfaces/IExecutorWithTimelock.sol';
 import {IGovernanceStrategy} from '../interfaces/IGovernanceStrategy.sol';
@@ -12,23 +12,23 @@ import {SafeMath} from '../dependencies/open-zeppelin/SafeMath.sol';
 
 /**
  * @title Governance V2 helper contract
- * @dev Helper contract to fetch data from the AaveGovernanceV2 contract and batch write calls
+ * @dev Helper contract to fetch data from the PegasysGovernanceV2 contract and batch write calls
  * - List of proposals with state
  * - List of votes per proposal and voters
  * - Batch token delegations calls
- * @author Aave
+ * @author Pegasys
  **/
 contract GovernanceV2Helper is IGovernanceV2Helper {
   using SafeMath for uint256;
   uint256 public constant ONE_HUNDRED_WITH_PRECISION = 10000;
 
-  function getProposal(uint256 id, IAaveGovernanceV2 governance)
+  function getProposal(uint256 id, IPegasysGovernanceV2 governance)
     public
     view
     override
     returns (ProposalStats memory proposalStats)
   {
-    IAaveGovernanceV2.ProposalWithoutVotes memory proposal = governance.getProposalById(id);
+    IPegasysGovernanceV2.ProposalWithoutVotes memory proposal = governance.getProposalById(id);
     uint256 votingSupply = IGovernanceStrategy(proposal.strategy).getTotalVotingSupplyAt(
       proposal.startBlock
     );
@@ -65,7 +65,7 @@ contract GovernanceV2Helper is IGovernanceV2Helper {
   function getProposals(
     uint256 skip,
     uint256 limit,
-    IAaveGovernanceV2 governance
+    IPegasysGovernanceV2 governance
   ) external view override returns (ProposalStats[] memory proposalsStats) {
     uint256 count = governance.getProposalsCount().sub(skip);
     uint256 maxLimit = limit > count ? count : limit;

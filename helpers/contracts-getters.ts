@@ -1,6 +1,6 @@
 import {
-  AaveGovernanceV2Factory,
-  AaveTokenV2Factory,
+  PegasysGovernanceV2Factory,
+  AaveTokenV2Factory as PegasysTokenV2Factory,
   ExecutorFactory,
   GovernanceStrategyFactory,
   GovernanceV2HelperFactory,
@@ -10,24 +10,24 @@ import {eContractid, tEthereumAddress} from './types';
 
 export const getFirstSigner = async () => (await DRE.ethers.getSigners())[0];
 
-export const getAaveGovernanceV2 = async (address?: tEthereumAddress) =>
-  await AaveGovernanceV2Factory.connect(
+export const getPegasysGovernanceV2 = async (address?: tEthereumAddress) =>
+  await PegasysGovernanceV2Factory.connect(
     address ||
-      (await getDb().get(`${eContractid.AaveGovernanceV2}.${DRE.network.name}`).value()).address,
+      (await getDb().get(`${eContractid.PegasysGovernanceV2}.${DRE.network.name}`).value()).address,
     await getFirstSigner()
   );
 
-export const getAaveV2Mocked = async (address?: tEthereumAddress) =>
-  await AaveTokenV2Factory.connect(
+export const getPegasysV2Mocked = async (address?: tEthereumAddress) =>
+  await PegasysTokenV2Factory.connect(
     address ||
-      (await getDb().get(`${eContractid.AaveTokenV2Mock}.${DRE.network.name}`).value()).address,
+      (await getDb().get(`${eContractid.PegasysTokenV2Mock}.${DRE.network.name}`).value()).address,
     await getFirstSigner()
   );
 
-export const getStkAaveV2Mocked = async (address?: tEthereumAddress) =>
-  await AaveTokenV2Factory.connect(
+export const getStkPSYSV2Mocked = async (address?: tEthereumAddress) =>
+  await PegasysTokenV2Factory.connect(
     address ||
-      (await getDb().get(`${eContractid.StkAaveTokenV2Mock}.${DRE.network.name}`).value()).address,
+      (await getDb().get(`${eContractid.StkPSYSTokenV2Mock}.${DRE.network.name}`).value()).address,
     await getFirstSigner()
   );
 

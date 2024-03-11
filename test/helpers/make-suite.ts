@@ -6,16 +6,16 @@ import chai from 'chai';
 import {solidity} from 'ethereum-waffle';
 import {getEthersSigners} from '../../helpers/contracts-helpers';
 import {
-  getAaveGovernanceV2,
-  getAaveV2Mocked,
+  getPegasysGovernanceV2,
+  getPegasysV2Mocked,
   getExecutor,
   getGovernanceStrategy,
   getGovernanceV2Helper,
-  getStkAaveV2Mocked,
+  getStkPSYSV2Mocked,
 } from '../../helpers/contracts-getters';
 import {tEthereumAddress} from '../../helpers/types';
-import {AaveGovernanceV2} from '../../types/AaveGovernanceV2';
-import {AaveTokenV2} from '../../types/AaveTokenV2';
+import {PegasysGovernanceV2} from '../../types/PegasysGovernanceV2';
+import {PegasysTokenV2} from '../../types/PegasysTokenV2';
 import {Executor} from '../../types/Executor';
 import {GovernanceStrategy} from '../../types/GovernanceStrategy';
 import {GovernanceV2Helper} from '../../types/GovernanceV2Helper';
@@ -30,9 +30,9 @@ export interface TestEnv {
   deployer: SignerWithAddress;
   minter: SignerWithAddress;
   users: SignerWithAddress[];
-  aave: AaveTokenV2;
-  stkAave: AaveTokenV2; // TODO change to a mock of stkAAVE
-  gov: AaveGovernanceV2;
+  psys: PegasysTokenV2;
+  stkPSYS: PegasysTokenV2; // TODO change to a mock of stkPSYS
+  gov: PegasysGovernanceV2;
   strategy: GovernanceStrategy;
   executor: Executor;
   govHelper: GovernanceV2Helper;
@@ -47,9 +47,9 @@ const testEnv: TestEnv = {
   deployer: {} as SignerWithAddress,
   minter: {} as SignerWithAddress,
   users: [] as SignerWithAddress[],
-  aave: {} as AaveTokenV2,
-  stkAave: {} as AaveTokenV2,
-  gov: {} as AaveGovernanceV2,
+  psys: {} as PegasysTokenV2,
+  stkPSYS: {} as PegasysTokenV2,
+  gov: {} as PegasysGovernanceV2,
   strategy: {} as GovernanceStrategy,
   govHelper: {} as GovernanceV2Helper,
   executor: {} as Executor,
@@ -75,9 +75,9 @@ export async function initializeMakeSuite() {
 
   testEnv.deployer = deployer;
   testEnv.minter = minter;
-  testEnv.aave = await getAaveV2Mocked();
-  testEnv.stkAave = await getStkAaveV2Mocked();
-  testEnv.gov = await getAaveGovernanceV2();
+  testEnv.psys = await getPegasysV2Mocked();
+  testEnv.stkPSYS = await getStkPSYSV2Mocked();
+  testEnv.gov = await getPegasysGovernanceV2();
   testEnv.strategy = await getGovernanceStrategy();
   testEnv.executor = await getExecutor();
   testEnv.govHelper = await getGovernanceV2Helper();

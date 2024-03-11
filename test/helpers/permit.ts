@@ -21,7 +21,7 @@ export const buildPermitParams = (
   },
   primaryType: 'VoteEmitted' as const,
   domain: {
-    name: 'Aave Governance v2',
+    name: 'Pegasys Governance v2',
     version: '1',
     chainId: chainId,
     verifyingContract: governance,
@@ -53,7 +53,7 @@ export const buildFakePermitParams = (
   },
   primaryType: 'VoteEmitted' as const,
   domain: {
-    name: 'Aave Governance v2',
+    name: 'Pegasys Governance v2',
     version: '1',
     chainId: chainId,
     verifyingContract: governance,

@@ -13,27 +13,27 @@ export enum EthereumNetworkNames {
   main = 'main',
 }
 
-export enum AavePools {
+export enum PegasysPools {
   proto = 'proto',
   secondary = 'secondary',
 }
 
 export enum eContractid {
-  AaveGovernanceV2 = 'AaveGovernanceV2',
+  PegasysGovernanceV2 = 'PegasysGovernanceV2',
   GovernanceStrategy = 'GovernanceStrategy',
   Executor = 'Executor',
   InitializableAdminUpgradeabilityProxy = 'InitializableAdminUpgradeabilityProxy',
-  AaveTokenV2Mock = 'AaveTokenV2Mock',
-  AaveTokenV2MockImpl = 'AaveTokenV2MockImpl',
-  AaveTokenV1MockImpl = 'AaveTokenV1MockImpl',
-  AaveTokenV2 = 'AaveTokenV2',
-  AaveTokenV1Mock = 'AaveTokenV1Mock',
+  PegasysTokenV2Mock = 'PegasysTokenV2Mock',
+  PegasysTokenV2MockImpl = 'PegasysTokenV2MockImpl',
+  PegasysTokenV1MockImpl = 'PegasysTokenV1MockImpl',
+  PegasysTokenV2 = 'PegasysTokenV2',
+  PegasysTokenV1Mock = 'PegasysTokenV1Mock',
   ExecutorMock = 'ExecutorMock',
-  StkAaveTokenV2Mock = 'StkAaveTokenV2Mock',
-  StkAaveTokenV2 = 'StkAaveTokenV2',
-  StkAaveTokenV2MockImpl = 'StkAaveTokenV2MockImpl',
-  StkAaveTokenV1Mock = 'StkAaveTokenV1Mock',
-  StkAaveTokenV1MockImpl = 'StkAaveTokenV1MockImpl',
+  StkPSYSTokenV2Mock = 'StkPSYSTokenV2Mock',
+  StkPSYSTokenV2 = 'StkPSYSTokenV2',
+  StkPSYSTokenV2MockImpl = 'StkPSYSTokenV2MockImpl',
+  StkPSYSTokenV1Mock = 'StkPSYSTokenV1Mock',
+  StkPSYSTokenV1MockImpl = 'StkPSYSTokenV1MockImpl',
   GovernanceV2Helper = 'GovernanceV2Helper',
 }
 
