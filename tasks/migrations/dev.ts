@@ -17,8 +17,9 @@ task(`migrate:dev`, `Deploy governance for tests and development purposes`)
   .addFlag('verify')
   .addFlag('silent')
   .addParam('votingDelay', '', '15')
+  .addParam('voteDuration', '', '1000')
   .addParam('executorAsOwner', '', 'true') // had issue with other types than string
-  .setAction(async ({ votingDelay, executorAsOwner, verify, silent }, _DRE) => {
+  .setAction(async ({ votingDelay, voteDuration, executorAsOwner, verify, silent }, _DRE) => {
     await _DRE.run('set-DRE');
     const [adminSigner, tokenMinterSigner] = await _DRE.ethers.getSigners();
 
@@ -54,21 +55,20 @@ task(`migrate:dev`, `Deploy governance for tests and development purposes`)
     });
     console.log('Governance address:', governance.address);
     const ADMIN = governance.address;
-
     // Deploy governance v2 helper
     await DRE.run('deploy:gov-helper');
 
     const executor = await DRE.run('deploy:executor', {
-      ADMIN,
-      DELAY,
-      GRACE,
-      minimumDelay,
-      MAX_DELAY,
-      propositionThreshold,
-      VOTE_DURATION,
-      voteDifferential,
-      minimumQuorum,
-      verify,
+      admin: ADMIN,
+      delay: DELAY,
+      gracePeriod: GRACE,
+      minimumDelay: minimumDelay,
+      maximumDelay: MAX_DELAY,
+      propositionThreshold: propositionThreshold,
+      voteDuration: voteDuration,
+      voteDifferential: voteDifferential,
+      minimumQuorum: minimumQuorum,
+      verify: verify,
     });
     console.log('Executor address:', executor.address);
 
