@@ -51,8 +51,6 @@ export const verifyContract = async (
       params['libraries'] = libraries;
     }
 
-    console.log('[BLOCKSCOUT][INFO] Verification params:', params);
-
     await runTaskWithRetry('verify:verify', params, times, msDelay, () => {});
   } catch (error) {
     console.error('[BLOCKSCOUT][ERROR] Verification failed:', error);
