@@ -11,11 +11,11 @@ import {
   getExecutor,
   getGovernanceStrategy,
   getGovernanceV2Helper,
-  getStkPSYSV2Mocked,
+  getStkPSYSV3Mocked,
 } from '../../helpers/contracts-getters';
 import { tEthereumAddress } from '../../helpers/types';
 import { PegasysGovernanceV2 } from '../../types/PegasysGovernanceV2';
-import { AaveTokenV2 } from '../../types/AaveTokenV2';
+import { PegasysTokenV2 } from '../../types/PegasysTokenV2';
 import { Executor } from '../../types/Executor';
 import { GovernanceStrategy } from '../../types/GovernanceStrategy';
 import { GovernanceV2Helper } from '../../types/GovernanceV2Helper';
@@ -30,8 +30,8 @@ export interface TestEnv {
   deployer: SignerWithAddress;
   minter: SignerWithAddress;
   users: SignerWithAddress[];
-  psys: AaveTokenV2;
-  stkPSYS: AaveTokenV2; // TODO change to a mock of stkPSYS
+  psys: PegasysTokenV2;
+  stkPSYS: PegasysTokenV2; // TODO change to a mock of stkPSYS
   gov: PegasysGovernanceV2;
   strategy: GovernanceStrategy;
   executor: Executor;
@@ -47,8 +47,8 @@ const testEnv: TestEnv = {
   deployer: {} as SignerWithAddress,
   minter: {} as SignerWithAddress,
   users: [] as SignerWithAddress[],
-  psys: {} as AaveTokenV2,
-  stkPSYS: {} as AaveTokenV2,
+  psys: {} as PegasysTokenV2,
+  stkPSYS: {} as PegasysTokenV2,
   gov: {} as PegasysGovernanceV2,
   strategy: {} as GovernanceStrategy,
   govHelper: {} as GovernanceV2Helper,
@@ -76,7 +76,7 @@ export async function initializeMakeSuite() {
   testEnv.deployer = deployer;
   testEnv.minter = minter;
   testEnv.psys = await getPegasysV2Mocked();
-  testEnv.stkPSYS = await getStkPSYSV2Mocked();
+  testEnv.stkPSYS = await getStkPSYSV3Mocked();
   testEnv.gov = await getPegasysGovernanceV2();
   testEnv.strategy = await getGovernanceStrategy();
   testEnv.executor = await getExecutor();

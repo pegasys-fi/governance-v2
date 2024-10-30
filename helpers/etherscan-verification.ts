@@ -8,12 +8,10 @@ const listSolidityFiles = (dir: string) => globby(`${dir}/**/*.sol`);
 
 const fatalErrors = [
   `The address provided as argument contains a contract, but its bytecode`,
-  `Daily limit of 100 source code submissions reached`,
+  `Rate limit reached`,
 ];
 
-export const SUPPORTED_ETHERSCAN_NETWORKS = ['main', 'ropsten', 'kovan'];
-
-export const getEtherscanPath = async (contractName: string) => {
+export const getContractPath = async (contractName: string) => {
   const paths = await listSolidityFiles(DRE.config.paths.sources);
   const path = paths.find((p) => p.includes(contractName));
   if (!path) {
@@ -35,40 +33,30 @@ export const verifyContract = async (
   constructorArguments: (string | string[])[],
   libraries?: string
 ) => {
-  const currentNetwork = DRE.network.name;
-
-  // if (!process.env.ETHERSCAN_KEY) {
-  //   throw Error('Missing process.env.ETHERSCAN_KEY.');
-  // }
-  if (!SUPPORTED_ETHERSCAN_NETWORKS.includes(currentNetwork)) {
-    // throw Error(
-    //   `Current network ${currentNetwork} not supported. Please change to one of the next networks: ${SUPPORTED_ETHERSCAN_NETWORKS.toString()}`
-    // );
-    return;
-  }
-  const etherscanPath = await getEtherscanPath(contractName);
-
   try {
-    console.log(
-      '[ETHERSCAN][WARNING] Delaying Etherscan verification due their API can not find newly deployed contracts'
-    );
-    const msDelay = 3000;
-    const times = 15;
-    // Write a temporal file to host complex parameters for buidler-etherscan https://github.com/nomiclabs/buidler/tree/development/packages/buidler-etherscan#complex-arguments
-    const { fd, path, cleanup } = await file({
-      prefix: 'verify-params-',
-      postfix: '.js',
-    });
-    fs.writeSync(fd, `module.exports = ${JSON.stringify([...constructorArguments])};`);
+    // Initial 10 second delay to allow for contract indexing
+    console.log('[BLOCKSCOUT][INFO] Waiting 10 seconds for contract indexing...');
+    await delay(10000);
+
+    console.log('[BLOCKSCOUT][INFO] Starting verification process...');
+    const msDelay = 5000; // Delay between retry attempts
+    const times = 10;
 
     const params = {
-      contractName: etherscanPath,
       address: address,
-      libraries,
-      constructorArgs: path,
+      constructorArguments: constructorArguments,
     };
-    await runTaskWithRetry('verify', params, times, msDelay, cleanup);
-  } catch (error) {}
+
+    if (libraries) {
+      params['libraries'] = libraries;
+    }
+
+    console.log('[BLOCKSCOUT][INFO] Verification params:', params);
+
+    await runTaskWithRetry('verify:verify', params, times, msDelay, () => {});
+  } catch (error) {
+    console.error('[BLOCKSCOUT][ERROR] Verification failed:', error);
+  }
 };
 
 export const runTaskWithRetry = async (
@@ -85,35 +73,31 @@ export const runTaskWithRetry = async (
     if (times) {
       await DRE.run(task, params);
       cleanup();
+      console.log('[BLOCKSCOUT][SUCCESS] Contract verified successfully');
     } else {
       cleanup();
       console.error(
-        '[ETHERSCAN][ERROR] Errors after all the retries, check the logs for more information.'
+        '[BLOCKSCOUT][ERROR] Verification failed after all retries. Check logs for details.'
       );
     }
   } catch (error) {
     counter--;
-    console.info(`[ETHERSCAN][[INFO] Retrying attemps: ${counter}.`);
-    console.error('[ETHERSCAN][[ERROR]', error.message);
+    console.info(`[BLOCKSCOUT][INFO] Retry attempts remaining: ${counter}`);
+    console.error('[BLOCKSCOUT][ERROR]', error.message);
 
     if (fatalErrors.some((fatalError) => error.message.includes(fatalError))) {
       console.error(
-        '[ETHERSCAN][[ERROR] Fatal error detected, skip retries and resume deployment.'
+        '[BLOCKSCOUT][ERROR] Fatal error detected, skipping retries and continuing deployment.'
       );
       return;
     }
 
-    await runTaskWithRetry(task, params, counter, msDelay, cleanup);
+    if (counter > 0) {
+      await runTaskWithRetry(task, params, counter, msDelay, cleanup);
+    }
   }
 };
 
 export const checkVerification = () => {
-  const currentNetwork = DRE.network.name;
-  // if (!process.env.ETHERSCAN_KEY) {
-  //   console.error('Missing process.env.ETHERSCAN_KEY.');
-  //   exit(3);
-  // }
-  if (!SUPPORTED_ETHERSCAN_NETWORKS.includes(currentNetwork)) {
-    return;
-  }
+  return true;
 };

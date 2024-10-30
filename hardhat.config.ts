@@ -6,8 +6,6 @@ import { accounts } from './test-wallets.js';
 // import { eEthereumNetwork } from './helpers/types';
 import dotenv from 'dotenv';
 
-import { BUIDLEREVM_CHAINID, COVERAGE_CHAINID } from './helpers/buidler-constants';
-
 import '@nomiclabs/hardhat-ethers';
 import '@nomiclabs/hardhat-waffle';
 import '@nomicfoundation/hardhat-verify';
@@ -74,8 +72,8 @@ const buidlerConfig: HardhatUserConfig = {
         network: 'main',
         chainId: 570,
         urls: {
-          apiURL: 'https://explorer.rollux.com/api',
-          browserURL: 'https://explorer.rollux.com/',
+          apiURL: 'https://explorer1.rollux.com/api',
+          browserURL: 'https://explorer1.rollux.com/',
         },
       },
     ],
@@ -95,7 +93,7 @@ const buidlerConfig: HardhatUserConfig = {
       blockGasLimit: DEFAULT_BLOCK_GAS_LIMIT,
       gas: DEFAULT_BLOCK_GAS_LIMIT,
       gasPrice: 8000000000,
-      chainId: BUIDLEREVM_CHAINID,
+      chainId: 570,
       throwOnTransactionFailures: true,
       throwOnCallFailures: true,
       accounts: accounts.map(({ secretKey, balance }: { secretKey: string; balance: string }) => ({

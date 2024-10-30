@@ -1,9 +1,9 @@
-import {expect, use} from 'chai';
-import {ipfsBytes32Hash, MAX_UINT_AMOUNT, ZERO_ADDRESS} from '../helpers/constants';
-import {makeSuite, TestEnv, deployGovernance} from './helpers/make-suite';
-import {solidity} from 'ethereum-waffle';
-import {BytesLike} from 'ethers/lib/utils';
-import {BigNumberish, BigNumber, Signer} from 'ethers';
+import { expect, use } from 'chai';
+import { ipfsBytes32Hash, MAX_UINT_AMOUNT, ZERO_ADDRESS } from '../helpers/constants';
+import { makeSuite, TestEnv, deployGovernance } from './helpers/make-suite';
+import { solidity } from 'ethereum-waffle';
+import { BytesLike } from 'ethers/lib/utils';
+import { BigNumberish, BigNumber, Signer } from 'ethers';
 import {
   evmRevert,
   evmSnapshot,
@@ -22,11 +22,11 @@ import {
   encodeSetDelay,
   impersonateAccountsHardhat,
 } from './helpers/gov-utils';
-import {deployFlashAttacks, deployGovernanceStrategy} from '../helpers/contracts-deployments';
-import {buildPermitParams, getSignatureFromTypedData} from './helpers/permit';
-import {fail} from 'assert';
-import {FlashAttacks} from '../types/FlashAttacks';
-import {ExecutorFactory} from '../types';
+import { deployFlashAttacks, deployGovernanceStrategy } from '../helpers/contracts-deployments';
+import { buildPermitParams, getSignatureFromTypedData } from './helpers/permit';
+import { fail } from 'assert';
+import { FlashAttacks } from '../types/FlashAttacks';
+import { ExecutorFactory } from '../types';
 
 use(solidity);
 
@@ -64,7 +64,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
   // Snapshoting main states as entry for later testing
   // Then will test by last snap shot first.
   before(async () => {
-    const {gov, executor, strategy, psys, users, minter} = testEnv;
+    const { gov, executor, strategy, psys, users, minter } = testEnv;
     const [user1, user2, user3, user4, user5, user6] = users;
 
     ({
@@ -707,7 +707,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
         psys,
         gov,
       } = testEnv;
-      const {chainId} = await DRE.ethers.provider.getNetwork();
+      const { chainId } = await DRE.ethers.provider.getNetwork();
       const configChainId = DRE.network.config.chainId;
       // ChainID must exist in current provider to work
       expect(configChainId).to.be.equal(chainId);
@@ -719,7 +719,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
       const msgParams = buildPermitParams(chainId, gov.address, proposal2Id.toString(), true);
       const ownerPrivateKey = require('../test-wallets.js').accounts[4].secretKey; // deployer, minter, user1, user2, user3
 
-      const {v, r, s} = getSignatureFromTypedData(ownerPrivateKey, msgParams);
+      const { v, r, s } = getSignatureFromTypedData(ownerPrivateKey, msgParams);
 
       const balance = await psys.connect(minter.signer).balanceOf(user3.address);
 
@@ -732,7 +732,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
         .to.emit(gov, 'VoteEmitted')
         .withArgs(proposal2Id, user3.address, true, balance);
 
-      const {votingPower} = await gov.getVoteOnProposal(proposal2Id, user3.address);
+      const { votingPower } = await gov.getVoteOnProposal(proposal2Id, user3.address);
       expect(votingPower).to.be.eq(balance);
     });
     it('Revert permit vote if invalid signature', async () => {
@@ -742,7 +742,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
         psys,
         gov,
       } = testEnv;
-      const {chainId} = await DRE.ethers.provider.getNetwork();
+      const { chainId } = await DRE.ethers.provider.getNetwork();
       const configChainId = DRE.network.config.chainId;
       // ChainID must exist in current provider to work
       expect(configChainId).to.be.equal(chainId);
@@ -754,7 +754,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
       const msgParams = buildPermitParams(chainId, gov.address, proposal2Id.toString(), true);
       const ownerPrivateKey = require('../test-wallets.js').accounts[4].secretKey; // deployer, minter, user1, user2, user3
 
-      const {r, s} = getSignatureFromTypedData(ownerPrivateKey, msgParams);
+      const { r, s } = getSignatureFromTypedData(ownerPrivateKey, msgParams);
 
       // Publish vote by signature using other address as relayer
       expect(
@@ -978,7 +978,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
     beforeEach(async () => {
       await evmRevert(snapshots.get('start') || '1');
       snapshots.set('start', await evmSnapshot());
-      const {gov} = testEnv;
+      const { gov } = testEnv;
       let currentCount = await gov.getProposalsCount();
       proposal2Id = currentCount.eq('0') ? currentCount : currentCount.sub('1');
     });
@@ -1037,15 +1037,8 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
       // Check ProposalCreated event
       const startBlock = BigNumber.from(tx.blockNumber).add(votingDelay);
       const endBlock = startBlock.add(votingDuration);
-      const [
-        executorAddress,
-        targets,
-        values,
-        signatures,
-        calldatas,
-        withDelegateCalls,
-        ipfsHash,
-      ] = params;
+      const [executorAddress, targets, values, signatures, calldatas, withDelegateCalls, ipfsHash] =
+        params;
 
       await expect(Promise.resolve(tx))
         .to.emit(gov, 'ProposalCreated')
@@ -1098,15 +1091,8 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
       // Check ProposalCreated event
       const startBlock = BigNumber.from(tx.blockNumber).add(votingDelay);
       const endBlock = startBlock.add(votingDuration);
-      const [
-        executorAddress,
-        targets,
-        values,
-        signatures,
-        calldatas,
-        withDelegateCalls,
-        ipfsHash,
-      ] = params;
+      const [executorAddress, targets, values, signatures, calldatas, withDelegateCalls, ipfsHash] =
+        params;
 
       await expect(Promise.resolve(tx))
         .to.emit(gov, 'ProposalCreated')
@@ -1361,7 +1347,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
     });
 
     it('Set governance strategy', async () => {
-      const {gov, psys, stkPSYS} = testEnv;
+      const { gov, psys, stkPSYS } = testEnv;
 
       const strategy = await deployGovernanceStrategy(psys.address, stkPSYS.address);
       // impersonate executor
@@ -1374,7 +1360,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
     });
 
     it('Set voting delay', async () => {
-      const {gov, deployer} = testEnv;
+      const { gov, deployer } = testEnv;
 
       // Set voting delay
       await gov.connect(executorSigner).setVotingDelay('10');
@@ -1390,7 +1376,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
     });
 
     it('Unauthorize executor', async () => {
-      const {gov, executor} = testEnv;
+      const { gov, executor } = testEnv;
 
       // Unauthorize executor
       await gov.connect(executorSigner).unauthorizeExecutors([executor.address]);
@@ -1400,7 +1386,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
     });
 
     it('Authorize executor', async () => {
-      const {gov, executor} = testEnv;
+      const { gov, executor } = testEnv;
 
       // Authorize
       await gov.connect(executorSigner).authorizeExecutors([executor.address]);
@@ -1409,28 +1395,28 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
       expect(isAuthorized).to.equal(true);
     });
     it('Revert setDelay due is not executor', async () => {
-      const {executor} = testEnv;
+      const { executor } = testEnv;
 
       await expect(executor.setDelay(await executor.MINIMUM_DELAY())).to.be.revertedWith(
         'ONLY_BY_THIS_TIMELOCK'
       );
     });
     it('Revert setDelay due is out of minimum delay', async () => {
-      const {executor} = testEnv;
+      const { executor } = testEnv;
 
       await expect(executor.connect(executorSigner).setDelay('0')).to.be.revertedWith(
         'DELAY_SHORTER_THAN_MINIMUM'
       );
     });
     it('Revert setDelay due is out of max delay', async () => {
-      const {executor} = testEnv;
+      const { executor } = testEnv;
 
       await expect(
         executor.connect(executorSigner).setDelay(await (await executor.MAXIMUM_DELAY()).add('1'))
       ).to.be.revertedWith('DELAY_LONGER_THAN_MAXIMUM');
     });
     it('setDelay should pass delay', async () => {
-      const {executor} = testEnv;
+      const { executor } = testEnv;
 
       await expect(executor.connect(executorSigner).setDelay(await executor.getDelay())).to.emit(
         executor,
@@ -1438,7 +1424,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
       );
     });
     it('Revert queueTransaction due caller is not admin', async () => {
-      const {executor} = testEnv;
+      const { executor } = testEnv;
 
       await expect(
         executor.connect(executorSigner).queueTransaction(ZERO_ADDRESS, '0', '', [], '0', false)
@@ -1446,14 +1432,14 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
     });
 
     it('Revert queueTransaction due executionTime is less than delay', async () => {
-      const {executor} = testEnv;
+      const { executor } = testEnv;
 
       await expect(
         executor.connect(govSigner).queueTransaction(ZERO_ADDRESS, '0', '', [], '0', false)
       ).to.be.revertedWith('EXECUTION_TIME_UNDERESTIMATED');
     });
     it('Revert executeTransaction due action does not exist', async () => {
-      const {executor} = testEnv;
+      const { executor } = testEnv;
 
       await expect(
         executor.connect(govSigner).executeTransaction(ZERO_ADDRESS, '0', '', [], '0', false)
@@ -1461,14 +1447,14 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
     });
 
     it('Revert acceptAdmin due caller is not a pending admin', async () => {
-      const {executor} = testEnv;
+      const { executor } = testEnv;
 
       await expect(executor.connect(executorSigner).acceptAdmin()).to.be.revertedWith(
         'ONLY_BY_PENDING_ADMIN'
       );
     });
     it('Revert constructor due delay is shorted than minimum', async () => {
-      const {deployer} = testEnv;
+      const { deployer } = testEnv;
       await expect(
         new ExecutorFactory(deployer.signer).deploy(
           ZERO_ADDRESS,
@@ -1484,7 +1470,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
       ).to.be.revertedWith('DELAY_SHORTER_THAN_MINIMUM');
     });
     it('Revert constructor due delay is longer than maximum', async () => {
-      const {deployer} = testEnv;
+      const { deployer } = testEnv;
       await expect(
         new ExecutorFactory(deployer.signer).deploy(
           ZERO_ADDRESS,
@@ -1530,7 +1516,7 @@ makeSuite('Pegasys Governance v2 tests', deployGovernance, (testEnv: TestEnv) =>
       await evmRevert(snapshots.get('start') || '1');
       snapshots.set('start', await evmSnapshot());
 
-      const {gov, executor, psys, users} = testEnv;
+      const { gov, executor, psys, users } = testEnv;
       const [user1, user2] = users;
       const encodedArgument3 = DRE.ethers.utils.defaultAbiCoder.encode(
         ['address'],

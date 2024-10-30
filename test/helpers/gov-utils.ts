@@ -5,7 +5,7 @@ import { expect, use } from 'chai';
 import { Test } from 'mocha';
 import { getFirstSigner } from '../../helpers/contracts-getters';
 import { SelfdestructTransferFactory } from '../../types';
-import { AaveTokenV2 } from '../../types/AaveTokenV2';
+import { PegasysTokenV2 } from '../../types/PegasysTokenV2';
 import { tEthereumAddress } from '../../helpers/types';
 
 export const emptyBalances = async (users: SignerWithAddress[], testEnv: TestEnv) => {
@@ -24,7 +24,7 @@ export const setBalance = async (user: SignerWithAddress, amount: BigNumber, tes
 export const setTokenBalance = async (
   user: SignerWithAddress,
   amount: BigNumber,
-  token: AaveTokenV2,
+  token: PegasysTokenV2,
   testEnv: TestEnv
 ) => {
   // emptying
