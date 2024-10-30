@@ -15,7 +15,10 @@ import { waitForTx } from './misc-utils';
 import { Interface } from 'ethers/lib/utils';
 import { ONE_ADDRESS } from './constants';
 
-export const deployGovernanceV2Helper = async (verify?: boolean) => {
+// Deploy governance helper contract for additional utility functions
+export const deployGovernanceV2Helper = async (
+  verify?: boolean // Whether to verify contract on etherscan
+) => {
   return withSaveAndVerify(
     await new GovernanceV2HelperFactory(await getFirstSigner()).deploy(),
     eContractid.GovernanceV2Helper,
@@ -24,12 +27,13 @@ export const deployGovernanceV2Helper = async (verify?: boolean) => {
   );
 };
 
+// Deploy main governance contract that handles proposal creation and voting
 export const deployPegasysGovernanceV2 = async (
-  governanceStrategy: tEthereumAddress,
-  votingDelay: string,
-  guardian: tEthereumAddress,
-  executors: tEthereumAddress[],
-  verify?: boolean
+  governanceStrategy: tEthereumAddress, // Address of governance strategy contract
+  votingDelay: string, // Delay before voting begins (in blocks)
+  guardian: tEthereumAddress, // Address of guardian (can cancel proposals)
+  executors: tEthereumAddress[], // Array of authorized executor addresses
+  verify?: boolean // Whether to verify contract on etherscan
 ) => {
   const args: [tEthereumAddress, string, string, tEthereumAddress[]] = [
     governanceStrategy,
@@ -45,10 +49,11 @@ export const deployPegasysGovernanceV2 = async (
   );
 };
 
+// Deploy governance strategy contract that defines voting power calculation
 export const deployGovernanceStrategy = async (
-  psys: tEthereumAddress,
-  stakedPSYSV3: tEthereumAddress,
-  verify?: boolean
+  psys: tEthereumAddress, // PSYS token address
+  stakedPSYSV3: tEthereumAddress, // Staked PSYS token address
+  verify?: boolean // Whether to verify contract on etherscan
 ) => {
   const args: [tEthereumAddress, tEthereumAddress] = [psys, stakedPSYSV3];
   return withSaveAndVerify(
@@ -59,18 +64,18 @@ export const deployGovernanceStrategy = async (
   );
 };
 
+// Deploy executor contract that handles proposal execution after successful voting
 export const deployExecutor = async (
-  admin: tEthereumAddress,
-  delay: string,
-  gracePeriod: string,
-  minimumDelay: string,
-  maximumDelay: string,
-  propositionThreshold: string,
-  voteDuration: string,
-  voteDifferential: string,
-  minimumQuorum: string,
-
-  verify?: boolean
+  admin: tEthereumAddress, // Admin address for executor
+  delay: string, // Delay between queue & execution (in seconds)
+  gracePeriod: string, // Grace period after delay (in seconds)
+  minimumDelay: string, // Minimum delay for proposals (in seconds)
+  maximumDelay: string, // Maximum delay for proposals (in seconds)
+  propositionThreshold: string, // Threshold for proposition (in basis points: 100 = 1%)
+  voteDuration: string, // Duration of vote (in seconds)
+  voteDifferential: string, // Required vote differential (in basis points: 100 = 1%)
+  minimumQuorum: string, // Minimum quorum needed (in basis points: 100 = 1%)
+  verify?: boolean // Whether to verify contract on etherscan
 ) => {
   const args: [tEthereumAddress, string, string, string, string, string, string, string, string] = [
     admin,
@@ -91,7 +96,11 @@ export const deployExecutor = async (
   );
 };
 
-export const deployProxy = async (customId: string, verify?: boolean) =>
+// Deploy a generic proxy contract with custom identifier
+export const deployProxy = async (
+  customId: string, // Custom identifier for the proxy contract
+  verify?: boolean // Whether to verify contract on etherscan
+) =>
   await withSaveAndVerify(
     await new InitializableAdminUpgradeabilityProxyFactory(await getFirstSigner()).deploy(),
     eContractid.InitializableAdminUpgradeabilityProxy,
@@ -100,7 +109,11 @@ export const deployProxy = async (customId: string, verify?: boolean) =>
     customId
   );
 
-export const deployMockedPegasysV2 = async (minter: tEthereumAddress, verify?: boolean) => {
+// Deploy mocked version of PegasysV2 token for testing
+export const deployMockedPegasysV2 = async (
+  minter: tEthereumAddress, // Address that can mint tokens
+  verify?: boolean // Whether to verify contract on etherscan
+) => {
   const mockTransferHook = await withSaveAndVerify(
     await new MockTransferHookFactory(await getFirstSigner()).deploy(),
     eContractid.MockTransferHook,
@@ -138,8 +151,11 @@ export const deployMockedPegasysV2 = async (minter: tEthereumAddress, verify?: b
   return await getPegasysV2Mocked(proxy.address);
 };
 
-export const deployMockedStkPSYSV2 = async (minter: tEthereumAddress, verify?: boolean) => {
-  // First deploy the MockTransferHook
+// Deploy mocked version of Staked PSYS V2 token for testing
+export const deployMockedStkPSYSV2 = async (
+  minter: tEthereumAddress, // Address that can mint tokens
+  verify?: boolean // Whether to verify contract on etherscan
+) => {
   const mockTransferHook = await withSaveAndVerify(
     await new MockTransferHookFactory(await getFirstSigner()).deploy(),
     eContractid.MockTransferHook,
@@ -184,11 +200,12 @@ export const deployMockedStkPSYSV2 = async (minter: tEthereumAddress, verify?: b
   return await getPegasysV2Mocked(proxy.address);
 };
 
+// Deploy flash attacks contract for testing purposes
 export const deployFlashAttacks = async (
-  token: tEthereumAddress,
-  minter: tEthereumAddress,
-  governance: tEthereumAddress,
-  verify?: boolean
+  token: tEthereumAddress, // Token address to test flash attacks against
+  minter: tEthereumAddress, // Address that can mint tokens
+  governance: tEthereumAddress, // Governance contract address
+  verify?: boolean // Whether to verify contract on etherscan
 ) => {
   const args: [string, string, string] = [token, minter, governance];
   return await withSaveAndVerify(
@@ -197,4 +214,58 @@ export const deployFlashAttacks = async (
     args,
     verify
   );
+};
+
+// Deploy all governance related contracts in one function
+export const deployFullGovernance = async (
+  psys: tEthereumAddress, // PSYS token address
+  stakedPSYSV3: tEthereumAddress, // Staked PSYS token address
+  admin: tEthereumAddress, // Admin address for executor
+  delay: string, // Delay between queue & execution
+  gracePeriod: string, // Grace period after delay
+  minimumDelay: string, // Minimum delay for proposals
+  maximumDelay: string, // Maximum delay for proposals
+  propositionThreshold: string, // Threshold for proposition (in basis points)
+  voteDuration: string, // Duration of vote
+  voteDifferential: string, // Required vote differential (in basis points)
+  minimumQuorum: string, // Minimum quorum needed (in basis points)
+  votingDelay: string, // Delay before voting begins (in blocks)
+  guardian: tEthereumAddress, // Guardian address
+  verify?: boolean // Whether to verify contracts
+) => {
+  // Deploy Governance Strategy
+  const governanceStrategy = await deployGovernanceStrategy(psys, stakedPSYSV3, verify);
+
+  // Deploy Executor
+  const executor = await deployExecutor(
+    admin,
+    delay,
+    gracePeriod,
+    minimumDelay,
+    maximumDelay,
+    propositionThreshold,
+    voteDuration,
+    voteDifferential,
+    minimumQuorum,
+    verify
+  );
+
+  // Deploy Governance
+  const governance = await deployPegasysGovernanceV2(
+    governanceStrategy.address,
+    votingDelay,
+    guardian,
+    [executor.address],
+    verify
+  );
+
+  // Deploy Helper
+  const helper = await deployGovernanceV2Helper(verify);
+
+  return {
+    governance, // Main governance contract
+    executor, // Executor contract
+    strategy: governanceStrategy, // Governance strategy contract
+    helper, // Governance helper contract
+  };
 };
