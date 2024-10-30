@@ -1,6 +1,6 @@
 import {
   PegasysGovernanceV2Factory,
-  AaveTokenV2Factory,
+  PegasysTokenV2Factory,
   ExecutorFactory,
   GovernanceStrategyFactory,
   GovernanceV2HelperFactory,
@@ -20,19 +20,19 @@ export const getPegasysGovernanceV2 = async (address?: tEthereumAddress) =>
   );
 
 export const getPegasysV2Mocked = async (address?: tEthereumAddress) =>
-  await AaveTokenV2Factory.connect(
+  await PegasysTokenV2Factory.connect(
     address ||
       (
-        await getDb().get(`${eContractid.AaveTokenV2Mock}.${DRE.network.name}`).value()
+        await getDb().get(`${eContractid.PegasysTokenV2Mock}.${DRE.network.name}`).value()
       ).address,
     await getFirstSigner()
   );
 
-export const getStkPSYSV2Mocked = async (address?: tEthereumAddress) =>
-  await AaveTokenV2Factory.connect(
+export const getStkPSYSV3Mocked = async (address?: tEthereumAddress) =>
+  await PegasysTokenV2Factory.connect(
     address ||
       (
-        await getDb().get(`${eContractid.StkPSYSTokenV2Mock}.${DRE.network.name}`).value()
+        await getDb().get(`${eContractid.StkPSYSTokenV3Mock}.${DRE.network.name}`).value()
       ).address,
     await getFirstSigner()
   );

@@ -13,8 +13,8 @@ const propositionThreshold = '125'; // 1.25%
 const voteDifferential = '650'; // 6.5%
 const minimumQuorum = '650'; // 6.5%
 
-const PSYS = '';
-const STKPSYS = '';
+const PSYS = '0x35f5b37f8a5341244d82309612Bce749493B06FD';
+const STKPSYS = '0xB25BcfDE0070C6feAc503850a0209D4f24797752';
 
 task(`deploy:main`, `Deploy governance contracts`)
   .addFlag('verify')

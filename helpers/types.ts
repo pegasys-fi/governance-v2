@@ -1,15 +1,10 @@
 export enum eEthereumNetwork {
-  buidlerevm = 'buidlerevm',
-  kovan = 'kovan',
-  ropsten = 'ropsten',
   main = 'main',
   coverage = 'coverage',
   hardhat = 'hardhat',
 }
 
 export enum EthereumNetworkNames {
-  kovan = 'kovan',
-  ropsten = 'ropsten',
   main = 'main',
 }
 
@@ -23,18 +18,14 @@ export enum eContractid {
   GovernanceStrategy = 'GovernanceStrategy',
   Executor = 'Executor',
   InitializableAdminUpgradeabilityProxy = 'InitializableAdminUpgradeabilityProxy',
-  AaveTokenV2Mock = 'AaveTokenV2Mock',
-  AaveTokenV2MockImpl = 'AaveTokenV2MockImpl',
-  PegasysTokenV1MockImpl = 'PegasysTokenV1MockImpl',
-  AaveTokenV2 = 'AaveTokenV2',
-  PegasysTokenV1Mock = 'PegasysTokenV1Mock',
+  PegasysTokenV2MockImpl = 'PegasysTokenV1MockImpl',
+  PegasysTokenV2Mock = 'PegasysTokenV2Mock',
   ExecutorMock = 'ExecutorMock',
-  StkPSYSTokenV2Mock = 'StkPSYSTokenV2Mock',
-  StkPSYSTokenV2 = 'StkPSYSTokenV2',
-  StkPSYSTokenV2MockImpl = 'StkPSYSTokenV2MockImpl',
-  StkPSYSTokenV1Mock = 'StkPSYSTokenV1Mock',
-  StkPSYSTokenV1MockImpl = 'StkPSYSTokenV1MockImpl',
+  StkPSYSTokenV3Mock = 'StkPSYSTokenV2Mock',
+  StkPSYSTokenV3 = 'StkPSYSTokenV2',
+  StkPSYSTokenV3MockImpl = 'StkPSYSTokenV2MockImpl',
   GovernanceV2Helper = 'GovernanceV2Helper',
+  MockTransferHook = 'MockTransferHook',
 }
 
 export type tEthereumAddress = string;
