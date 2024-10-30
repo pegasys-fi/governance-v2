@@ -20,7 +20,7 @@
     "ci:clean": "rm -rf ./artifacts ./cache ./types ./coverage*",
     "migrate:dev": "npm run compile:force:quiet && hardhat migrate:dev --verify",
     "migrate:main": "npm run compile:force:quiet && hardhat migrate:dev --network main",
-    "deploy:main": "npm run compile:force:quiet && hardhat deploy:main --network main",
+    "deploy:main": "npm run compile:force:quiet && hardhat deploy:main --network main --verify",
     "deploy:gov": "npm run compile:force:quiet && hardhat deploy:gov --network main",
     "deploy:executor": "npm run compile:force:quiet && hardhat deploy:executor --network main",
     "deploy:strategy": "npm run compile:force:quiet && hardhat deploy:strategy --network main",

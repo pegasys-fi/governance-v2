@@ -2,6 +2,7 @@ import { BigNumber } from 'ethers';
 import { task } from 'hardhat/config';
 import { DRE, waitForTx } from '../../helpers/misc-utils';
 import { deployFullGovernance } from '../../helpers/contracts-deployments';
+import { getFirstSigner } from '../../helpers/contracts-getters';
 
 // Basic time unit for calculations (in seconds)
 const ONE_DAY = BigNumber.from('60').mul('60').mul('24'); // 86400 seconds
@@ -22,8 +23,8 @@ const MINIMUM_QUORUM = '65000'; // Minimum participation required (650.00%)
 const VOTING_DELAY = '15'; // Number of blocks to wait before voting begins
 
 // Contract addresses
-const PSYS_ADDRESS = '0x35f5b37f8a5341244d82309612Bce749493B06FD';
-const STK_PSYS_ADDRESS = '0xB25BcfDE0070C6feAc503850a0209D4f24797752';
+const PSYS_ADDRESS = '0xB2cd2D3d1a009f3aa8F35DAC38BD2e9d4Bd92d31';
+const STK_PSYS_ADDRESS = '0x3C72568C296902Dc75c6BEfa113eF8dBfb015347';
 
 task(`deploy:main`, `Deploy governance contracts`)
   .addFlag('verify')
@@ -50,7 +51,11 @@ task(`deploy:main`, `Deploy governance contracts`)
       verify // verify contracts
     );
 
-    // Note: Removed proxy-specific operations since we're not using proxies anymore
+    // set up the proper ownership structure
+    await waitForTx(await governance.authorizeExecutors([executor.address]));
+    await waitForTx(
+      await governance.connect(await getFirstSigner()).transferOwnership(executor.address)
+    );
 
     if (!silent) {
       console.log('\nDeployed Addresses:');
