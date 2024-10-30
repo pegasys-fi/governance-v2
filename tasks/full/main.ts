@@ -15,16 +15,16 @@ const MIN_DELAY = '10'; // Minimum delay (10 seconds)
 const VOTE_DURATION = ONE_DAY.mul('10').toString(); // Duration of voting period (10 days = 864000 seconds)
 
 // Governance thresholds (in basis points: 100 = 1%)
-const PROPOSITION_THRESHOLD = '12500'; // Required power to create proposal (125.00%)
-const VOTE_DIFFERENTIAL = '65000'; // Required difference between for/against (650.00%)
-const MINIMUM_QUORUM = '65000'; // Minimum participation required (650.00%)
+const PROPOSITION_THRESHOLD = '125'; // Required power to create proposal (1,25%)
+const VOTE_DIFFERENTIAL = '650'; // Required difference between for/against (6,5%)
+const MINIMUM_QUORUM = '650'; // Minimum participation required (6,5%)
 
 // Voting delay (in blocks)
 const VOTING_DELAY = '15'; // Number of blocks to wait before voting begins
 
 // Contract addresses
-const PSYS_ADDRESS = '0xB2cd2D3d1a009f3aa8F35DAC38BD2e9d4Bd92d31';
-const STK_PSYS_ADDRESS = '0x3C72568C296902Dc75c6BEfa113eF8dBfb015347';
+const PSYS_ADDRESS = '0x49D28d317E4d96A028FE63E5698d40BDEc20aAc5';
+const STK_PSYS_ADDRESS = '0xd05D3fD74a947bf6814dDdD141138Af92Cb07636';
 
 task(`deploy:main`, `Deploy governance contracts`)
   .addFlag('verify')
