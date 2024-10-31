@@ -2,6 +2,8 @@ import { BigNumber } from 'ethers';
 import { task } from 'hardhat/config';
 import { DRE, waitForTx } from '../../helpers/misc-utils';
 import { deployFullGovernance } from '../../helpers/contracts-deployments';
+import { getFirstSigner } from '../../helpers/contracts-getters';
+
 
 // Basic time unit for calculations (in seconds)
 const ONE_DAY = BigNumber.from('60').mul('60').mul('24'); // 86400 seconds
@@ -14,16 +16,17 @@ const MIN_DELAY = '10'; // Minimum delay (10 seconds)
 const VOTE_DURATION = ONE_DAY.mul('10').toString(); // Duration of voting period (10 days = 864000 seconds)
 
 // Governance thresholds (in basis points: 100 = 1%)
-const PROPOSITION_THRESHOLD = '12500'; // Required power to create proposal (125.00%)
-const VOTE_DIFFERENTIAL = '65000'; // Required difference between for/against (650.00%)
-const MINIMUM_QUORUM = '65000'; // Minimum participation required (650.00%)
+const PROPOSITION_THRESHOLD = '125'; // Required power to create proposal (1,25%)
+const VOTE_DIFFERENTIAL = '650'; // Required difference between for/against (6,5%)
+const MINIMUM_QUORUM = '650'; // Minimum participation required (6,5%)
 
 // Voting delay (in blocks)
 const VOTING_DELAY = '15'; // Number of blocks to wait before voting begins
 
 // Contract addresses
-const PSYS_ADDRESS = '0x35f5b37f8a5341244d82309612Bce749493B06FD';
-const STK_PSYS_ADDRESS = '0xB25BcfDE0070C6feAc503850a0209D4f24797752';
+const PSYS_ADDRESS = '0x1c5ed8Ff728574faf9a8Cba1E63DC9eBD14Aa9dd';
+const STK_PSYS_ADDRESS = '0xf18B6F5127433a37BA26B8daCF351BC1d688d50e';
+
 
 task(`deploy:main`, `Deploy governance contracts`)
   .addFlag('verify')
@@ -50,7 +53,11 @@ task(`deploy:main`, `Deploy governance contracts`)
       verify // verify contracts
     );
 
-    // Note: Removed proxy-specific operations since we're not using proxies anymore
+    // set up the proper ownership structure
+    await waitForTx(await governance.authorizeExecutors([executor.address]));
+    await waitForTx(
+      await governance.connect(await getFirstSigner()).transferOwnership(executor.address)
+    );
 
     if (!silent) {
       console.log('\nDeployed Addresses:');
