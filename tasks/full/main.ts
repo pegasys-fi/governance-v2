@@ -4,6 +4,7 @@ import { DRE, waitForTx } from '../../helpers/misc-utils';
 import { deployFullGovernance } from '../../helpers/contracts-deployments';
 import { getFirstSigner } from '../../helpers/contracts-getters';
 
+
 // Basic time unit for calculations (in seconds)
 const ONE_DAY = BigNumber.from('60').mul('60').mul('24'); // 86400 seconds
 
@@ -25,6 +26,7 @@ const VOTING_DELAY = '15'; // Number of blocks to wait before voting begins
 // Contract addresses
 const PSYS_ADDRESS = '0x1c5ed8Ff728574faf9a8Cba1E63DC9eBD14Aa9dd';
 const STK_PSYS_ADDRESS = '0xf18B6F5127433a37BA26B8daCF351BC1d688d50e';
+
 
 task(`deploy:main`, `Deploy governance contracts`)
   .addFlag('verify')
