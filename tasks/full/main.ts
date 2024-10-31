@@ -23,8 +23,8 @@ const MINIMUM_QUORUM = '650'; // Minimum participation required (6,5%)
 const VOTING_DELAY = '15'; // Number of blocks to wait before voting begins
 
 // Contract addresses
-const PSYS_ADDRESS = '0x49D28d317E4d96A028FE63E5698d40BDEc20aAc5';
-const STK_PSYS_ADDRESS = '0xd05D3fD74a947bf6814dDdD141138Af92Cb07636';
+const PSYS_ADDRESS = '0x1c5ed8Ff728574faf9a8Cba1E63DC9eBD14Aa9dd';
+const STK_PSYS_ADDRESS = '0xf18B6F5127433a37BA26B8daCF351BC1d688d50e';
 
 task(`deploy:main`, `Deploy governance contracts`)
   .addFlag('verify')
